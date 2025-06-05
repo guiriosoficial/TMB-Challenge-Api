@@ -157,3 +157,6 @@ dotnet build
 dotnet run
 ```
 
+4. **Abra o Projeto**:
+- Por padrão, o projeto será executado na porta 5000
+- http://localhost:5000
