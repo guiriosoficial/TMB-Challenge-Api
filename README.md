@@ -73,6 +73,11 @@ appsettings.json        -> Armazena configurações do aplicativo, como strings 
 - Substitua `<CADEIA_DE_CONEXAO>` pela Cadeia de conexão.
 - Substitua `<NOME_DA_FILA>` pelo nome da sua Fila
 
+```bash
+# Exemplo de string
+"Endpoint=sb://<SEU_NAMESPACE>.servicebus.windows.net/;SharedAccessKeyName=<NOME_DA_CHAVE_DE_ACESSP>;SharedAccessKey=<CHAVE_DE_ACESSO>",
+```
+
 ## Configuração do Banco de Dados
 
 1. **Inicie o Banco de Dados**:
@@ -95,6 +100,8 @@ docker run --name=<CONTAINER_NAME> -e POSTGRES_USER=<DB_USER> -e POSTGRES_PASSWO
 ```bash
 # Exemplo
 docker run --name=TMB-DB -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin -e POSTGRES_DB=TmbDb -p 5432:5432 -d postgres
+
+# Postgree utiliza por padrão a porta 5432, Se desejar mudar, nao se esqueça de ajudar a Connection String
 ```
 
 2. **Configure a String de Conexão**:
@@ -113,6 +120,7 @@ docker run --name=TMB-DB -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin -e PO
 ```bash
 # Exemplo de string
 Host=localhost;Port=5432;Database=TmbDb;Username=admin;Password=admin
+
 ```
 
 3. **Aplique as Migrações**:
