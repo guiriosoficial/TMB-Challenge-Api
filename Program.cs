@@ -14,10 +14,10 @@ builder.Services.AddTransient<OrderService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin",
+    options.AddPolicy("AllowAll",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3001")
+            policy.AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
@@ -41,7 +41,7 @@ builder.Services.AddControllers()
 
 var app = builder.Build();
 
-app.UseCors("AllowSpecificOrigin");
+app.UseCors("AllowAll");
 app.MapControllers();
 app.UseWebSockets();
 app.Run();
