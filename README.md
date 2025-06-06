@@ -15,6 +15,7 @@ Antes de começar, certifique-se de ter os seguintes componentes instalados:
    - Uma conta no [Azure](https://azure.microsoft.com/)
 
 ## Configuração do Projeto
+> ATENÇÃO: A Execução do projeto atravez do docker ainda não esta funcionando devidamente.
 
 1. **Clone o Repositório**:
 ```bash

@@ -1,0 +1,28 @@
+version: '3.8'
+name: TMB-Challenge
+
+services:
+  db:
+    image: postgres
+    container_name: TMB-DB
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: TmbDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: TMB-Challenge-Api
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
