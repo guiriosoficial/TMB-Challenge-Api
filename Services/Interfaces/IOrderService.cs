@@ -10,7 +10,7 @@ namespace OrderApi.Services.Interfaces
         Task<Order?> GetOrderByIdAsync(Guid id);
         Task CreateOrderAsync(Order order);
         Task UpdateOrderStatusAsync(Guid orderId, OrderStatus status);
-        Task UpdateOrderAsync(Order order, OrderDto orderDto);
+        Task<Order> UpdateOrderAsync(Order order, OrderDto orderDto);
         Task DeleteOrderAsync(Guid id);
     }
 }

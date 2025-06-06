@@ -1,5 +1,3 @@
-using OrderApi.Enums;
-
 namespace OrderApi.Models
 {
     public class OrderDto

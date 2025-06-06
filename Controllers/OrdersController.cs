@@ -49,8 +49,9 @@ namespace OrderApi.Controllers
                 return NotFound();
             }
 
-            await _orderService.UpdateOrderAsync(order, orderDto);
-            return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
+            var updatedOrder = await _orderService.UpdateOrderAsync(order, orderDto);
+
+            return Ok(updatedOrder);
         }
 
         [HttpDelete("{id}")]

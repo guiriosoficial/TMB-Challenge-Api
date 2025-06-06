@@ -44,12 +44,11 @@ namespace OrderApi.Services.Implementations
                 order.Status = status;
                 await _orderRepository.UpdateAsync(order);
 
-                var message = JsonSerializer.Serialize(order);
-                await _webSocketHandler.SendMessageAsync(message);
+                await _webSocketHandler.SendMessageAsync(order);
             }
         }
 
-        public async Task UpdateOrderAsync(Order order, OrderDto orderDto)
+        public async Task<Order> UpdateOrderAsync(Order order, OrderDto orderDto)
         {
             order.Cliente = orderDto.Cliente;
             order.Produto = orderDto.Produto;
@@ -57,6 +56,7 @@ namespace OrderApi.Services.Implementations
 
             await _orderRepository.UpdateAsync(order);
             await SendMessageToServiceBusAsync(order);
+            return order;
         }
 
         public async Task DeleteOrderAsync(Guid id)

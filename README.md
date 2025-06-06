@@ -124,6 +124,7 @@ appsettings.json        -> Armazena configurações do aplicativo, como strings 
       ```bash
       dotnet ef migrations add InitialCreate
       dotnet ef database update
+      # Caso receba algum erro, rode o comando novamente
       ```
    
    - Isso criará as tabelas necessárias no banco de dados.

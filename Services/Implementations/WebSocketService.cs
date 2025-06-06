@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 using OrderApi.Services.Interfaces;
 
 namespace OrderApi.Services.Implementations
@@ -8,6 +9,12 @@ namespace OrderApi.Services.Implementations
     public class WebSocketHandler : IWebSocketHandler
     {
         private readonly ConcurrentDictionary<WebSocket, bool> _sockets = new ConcurrentDictionary<WebSocket, bool>();
+        private readonly JsonSerializerOptions _jsonOptions;
+
+        public WebSocketHandler(JsonSerializerConfig jsonSerializerConfig)
+        {
+            _jsonOptions = jsonSerializerConfig.Options;
+        }
 
         public async Task HandleWebSocketAsync(WebSocket webSocket)
         {
@@ -25,9 +32,10 @@ namespace OrderApi.Services.Implementations
             await webSocket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
         }
 
-        public async Task SendMessageAsync(string message)
+        public async Task SendMessageAsync<T>(T messageObject)
         {
-            var buffer = Encoding.UTF8.GetBytes(message);
+            var jsonString = JsonSerializer.Serialize(messageObject, _jsonOptions);
+            var buffer = Encoding.UTF8.GetBytes(jsonString);
             var tasks = _sockets.Keys.Select(async socket =>
             {
                 if (socket.State == WebSocketState.Open)
