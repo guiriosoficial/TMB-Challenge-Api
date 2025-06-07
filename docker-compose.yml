@@ -34,21 +34,35 @@ services:
         condition: service_healthy
     profiles: ["migrator"]
 
-  app:
+  api:
     container_name: tmb-challenge-api
     build:
       context: .
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "5000:5000"
+      - "5000:8080"
     environment:
       ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
-      AzureServiceBusOptions__ConnectionString: ${AzureServiceBusOptions__ConnectionString}
-      AzureServiceBusOptions__QueueName: ${AzureServiceBusOptions__QueueName}
+      AzureServiceBus__ConnectionString: ${AzureServiceBus__ConnectionString}
+      AzureServiceBus__QueueName: ${AzureServiceBus__QueueName}
     depends_on:
       db:
         condition: service_healthy
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8080/healthcheck"]
+
+  app:
+    container_name: tmb-challenge-app
+    build:
+      context: ../TMB-Challenge-Web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    # depends_on:
+    #   api:
+    #     condition: service_healthy
+    profiles: ['app']
 
 volumes:
   db_data:

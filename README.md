@@ -49,8 +49,10 @@ appsettings.json        -> Armazena configurações do aplicativo, como strings 
       DB_NAME=<DB_NAME>
       DB_USERNAME=<DB_USERNAME>
       DB_PASSWORD=<DB_PASSWORD>
+      DB_HOST=localhost
+      DB_PORT=5432
 
-      ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=${DB_NAME};Username=${DB_USERNAME};Password=${DB_PASSWORD}""
+      ConnectionStrings__DefaultConnection="Host=${DB_HOST}$;Port=${DB_PORT};Database=${DB_NAME};Username=${DB_USERNAME};Password=${DB_PASSWORD}""
       AzureServiceBus__ConnectionString=<AZURE_SERVICEBUS_CONNECTION_STRING>
       AzureServiceBus__QueueName=<AZURE_SERVICEBUS_QUEUE_NAME>
       ```
@@ -124,8 +126,7 @@ dotnet run
 ## Execute o Projeto com Docker
 
 > ATENÇÃO: Certifique-se de que as portas 5432 e 5000 estão disnponíveis.
-> Se Desejar, altere asportas nas variaveis em `.env` de ambiente, e no `docker-compose.yml`.
-> Não se esqueça de alterar as portas nos apontamentos.
+> Se Desejar, altere as portas nas variaveis de ambiente em `.env`, e no `docker-compose.yml`.
 
 1. **Na Primeira Execução**
 ```bash
@@ -139,11 +140,30 @@ docker compose up --build -d
 # Isso fará o Build do Projeto, utilize sempre que fizer alterações
 ```
 
-1. **Nas Execuções**
+1. **Demais Execuções**
 ```bash
 docker compose up -d
 # Apenas inicia o container
 ```
+
+1. **Front-end**
+   - Caso queira iniciar o Front-end, clone o projeto em um diretório irmão.
+      ```bash
+      # Assumindo que você está dentro do projeto TMB-Challenge-Api
+      git clone https://github.com/guiriosoficial/TMB-Challenge-Web ../
+      ```
+
+   - Adicione as variáveis de ambiente necessárias ao `.env`.
+      ```bash
+      NEXT_PUBLIC_API_BASE_URL="http://localhost:5000/api"
+      NEXT_PUBLIC_WS_BASE_URL="ws://localhost:5000/ws"
+      ```
+
+   - Altere o `DB_HOST` para o nome do serviço no container (`db`).
+   - Utilize o perfil `app` para que ele seja inicializado.
+      ```bash
+      docker compose --profile app up -d
+      ```
 
 ## Abra o Projeto
    - Por padrão, o projeto será executado na porta 5000

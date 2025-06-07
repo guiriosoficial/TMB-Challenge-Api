@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using OrderApi.Data;
 using OrderApi.Repositories.Implementations;
@@ -42,6 +43,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddHostedService<OrderWorker>();
 
+builder.Services.AddHealthChecks();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -52,6 +54,7 @@ builder.Services.AddControllers()
 var app = builder.Build();
 
 app.UseCors("AllowAll");
+app.MapHealthChecks("/healthcheck");
 app.MapControllers();
 app.UseWebSockets();
 app.Run();
