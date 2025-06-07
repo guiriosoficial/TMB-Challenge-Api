@@ -6,6 +6,12 @@ using OrderApi.Services.Implementations;
 using OrderApi.Services.Interfaces;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using DotNetEnv;
+
+if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Production")
+{
+    Env.Load();
+}
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +34,6 @@ builder.Services.AddCors(options =>
         });
 });
 
-// Adicionar o DbContext ao contêiner de serviços
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddSingleton<JsonSerializerConfig>();
@@ -37,7 +42,6 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddHostedService<OrderWorker>();
 
-// Trata serealização camel case e pascal case e de enums
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {

@@ -1,0 +1,16 @@
+# Exclui pastas de binários de build e pacotes NuGet
+bin/
+obj/
+out/
+
+# Exclui arquivos de controle de versão e outros que não são código fonte
+.git/
+.gitignore
+.vscode/ # Se usa VS Code e não quer copiar configs
+
+# Exclui quaisquer arquivos .csproj e .sln para que não sejam copiados
+# pelo 'COPY . .' posterior, já que eles são copiados explicitamente
+# em uma camada anterior (para otimização de cache).
+*.sln
+
+.vs/

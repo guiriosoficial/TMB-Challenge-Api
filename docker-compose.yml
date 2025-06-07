@@ -1,28 +1,54 @@
-version: '3.8'
-name: TMB-Challenge
+name: tmb-challenge
 
 services:
   db:
+    container_name: tmb-challenge-db
     image: postgres
-    container_name: TMB-DB
+    restart: always
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: TmbDb
+      POSTGRES_USER: ${DB_USERNAME:-admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-admin}
+      POSTGRES_DB: ${DB_NAME:-TmbDb}
     ports:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
 
-  app:
+  migrator:
+    container_name: tmb-challenge-migrator
+    image: mcr.microsoft.com/dotnet/sdk:9.0-alpine
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: TMB-Challenge-Api
+      target: build
+    command: >
+      /bin/sh -c "
+        dotnet ef database update --project /app/TMB-Challenge.csproj --startup-project /app/TMB-Challenge.csproj --connection ${ConnectionStrings__DefaultConnection}
+      "
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    profiles: ["migrator"]
+
+  app:
+    container_name: tmb-challenge-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
     ports:
       - "5000:5000"
+    environment:
+      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+      AzureServiceBusOptions__ConnectionString: ${AzureServiceBusOptions__ConnectionString}
+      AzureServiceBusOptions__QueueName: ${AzureServiceBusOptions__QueueName}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
 volumes:
   db_data:

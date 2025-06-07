@@ -15,7 +15,6 @@ Antes de começar, certifique-se de ter os seguintes componentes instalados:
    - Uma conta no [Azure](https://azure.microsoft.com/)
 
 ## Configuração do Projeto
-> ATENÇÃO: A Execução do projeto atravez do docker ainda não esta funcionando devidamente.
 
 1. **Clone o Repositório**:
 ```bash
@@ -23,7 +22,7 @@ git clone git@github.com:guiriosoficial/TMB-Challenge-Api.git
 cd TMB-Challenge-Api
 ```
 
-2. **Endenda a estrutura do projeto**:
+1. **Entenda a estrutura do projeto**:
 ```
 /Config                 -> Configurações do aplicativo, como configuração de serviços externos (Ex. Azure Service Bus).
 /Controllers            -> Controladores que lidam com as requisições HTTP e definem as rotas da API.
@@ -41,42 +40,32 @@ cd TMB-Challenge-Api
 
 Program.cs              -> Ponto de entrada principal do aplicativo.
 appsettings.json        -> Armazena configurações do aplicativo, como strings de conexão.
-.gitignore              -> Arquivos e diretórios que devem ser ignorados pelo controle de versão Git.
 ```
 
-### Configuração do Azure Service Bus
-
-1. **Crie um Namespace do Service Bus**:
-   - Acesse o [Portal Azure](https://portal.azure.com/).
-   - Crie um novo namespace do Service Bus.
-
-2. **Crie uma Fila**:
-   - Dentro do namespace do Service Bus, crie uma nova fila.
-
-3. **Obtenha as Credenciais de Acesso**:
-   - Vá para "Políticas de acesso compartilhado" no namespace do Service Bus.
-   - Clique em uma das polísicas, como `RootManageSharedAccessKey`.
-   - Copie o `Cadeia de conexão primária`.
-
-3. **Configure a Cadeia de Conexão no Projeto**:
-   - Atualize o arquivo `appsettings.json` com a string de conexão da Azure Service Bus e o nome da fila:
-      ```json
-      {
-         "AzureServiceBusOptions": {
-            "ConnectionString": "<CADEIA_DE_CONEXAO>",
-            "QueueName": "<NOME_DA_FILA>"
-         }
-      }
-      ```
-      
-   - Substitua `<CADEIA_DE_CONEXAO>` pela Cadeia de conexão.
-   - Substitua `<NOME_DA_FILA>` pelo nome da sua Fila
+3. **Defina as Variáveis de Ambiente**:
+   - Crie um arquivo chamado `.env` na raiz do projeto.
+   - Insira o seguinte conteúdo:
       ```bash
-      # Exemplo
+      DB_NAME=<DB_NAME>
+      DB_USERNAME=<DB_USERNAME>
+      DB_PASSWORD=<DB_PASSWORD>
+
+      ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=${DB_NAME};Username=${DB_USERNAME};Password=${DB_PASSWORD}""
+      AzureServiceBus__ConnectionString=<AZURE_SERVICEBUS_CONNECTION_STRING>
+      AzureServiceBus__QueueName=<AZURE_SERVICEBUS_QUEUE_NAME>
+      ```
+
+   - Substitua `<DB_NAME>`, `<DB_USERNAME>` e `<DB_PASSWORD>` pelo nome do banco de dados, nome de usuário e senha respectivamente.
+   - Substitua `<AZURE_SERVICEBUS_QUEUE_NAME>` pelo nome da sua fila no Azure Service Bus.
+   - Substitua `AZURE_SERVICEBUS_CONNECTION_STRING` pela cadeia de conexão da sua fila.
+      ```bash
+      # Exemplo de AZURE_SERVICEBUS_CONNECTION_STRING
       "Endpoint=sb://<SEU_NAMESPACE>.servicebus.windows.net/;SharedAccessKeyName=<NOME_DA_CHAVE_DE_ACESSP>;SharedAccessKey=<CHAVE_DE_ACESSO>"
       ```
 
-## Configuração do Banco de Dados
+## Execute o Projeto Manualmente
+
+### Configuração do Banco de Dados
 
 1. **Inicie o Banco de Dados**:
    - Clone uma imagem docker de PostgreSQL
@@ -98,23 +87,7 @@ appsettings.json        -> Armazena configurações do aplicativo, como strings 
       docker run --name=TMB-DB -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin -e POSTGRES_DB=TmbDb -p 5432:5432 -d postgres
       ```
 
-2. **Configure a String de Conexão**:
-   - Atualize o arquivo `appsettings.json` com a string de conexão do seu banco de dados:
-      ```json
-      {
-         "ConnectionStrings": {
-            "DefaultConnection": "<CONNECTION_STRING>"
-         },
-      }
-      ```
-
-   - Substitua `<CONNECTION_STRING>` pela string de conexão do seu banco de dados.
-      ```bash
-      # Exemplo de string
-      Host=localhost;Port=5432;Database=TmbDb;Username=admin;Password=admin
-      ```
-
-3. **Aplique as Migrações**:
+2. **Aplique as Migrações**:
    - Certifique-se de que o Entity Framework Core CLI esteja instalado:
       ```bash
       # Caso não esteja, instale com o seguinte comando:
@@ -123,14 +96,15 @@ appsettings.json        -> Armazena configurações do aplicativo, como strings 
 
    - No diretório do projeto, execute o seguinte comando para aplicar as migrações:
       ```bash
-      dotnet ef migrations add InitialCreate
       dotnet ef database update
-      # Caso receba algum erro, rode o comando novamente
+
+      # Caso não exista nenhuma migração, utilize este comando antes:
+      dotnet ef migrations add <MIGRATION_NAME>
       ```
    
    - Isso criará as tabelas necessárias no banco de dados.
 
-## Execute o projeto
+### Inicie o projeto
 
 1. **Restaure as dependências**:
 ```bash
@@ -147,6 +121,30 @@ dotnet build
 dotnet run
 ```
 
-4. **Abra o Projeto**:
+## Execute o Projeto com Docker
+
+> ATENÇÃO: Certifique-se de que as portas 5432 e 5000 estão disnponíveis.
+> Se Desejar, altere asportas nas variaveis em `.env` de ambiente, e no `docker-compose.yml`.
+> Não se esqueça de alterar as portas nos apontamentos.
+
+1. **Na Primeira Execução**
+```bash
+docker compose --profile migrator up --build -d
+# Isso irá aplicar as migrações do banco de dados, utilize sempre que uma nova migration for criada
+```
+
+1. **Ao Modificar Execuções**
+```bash
+docker compose up --build -d
+# Isso fará o Build do Projeto, utilize sempre que fizer alterações
+```
+
+1. **Nas Execuções**
+```bash
+docker compose up -d
+# Apenas inicia o container
+```
+
+## Abra o Projeto
    - Por padrão, o projeto será executado na porta 5000
    - http://localhost:5000
