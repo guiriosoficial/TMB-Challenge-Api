@@ -52,7 +52,7 @@ appsettings.json        -> Armazena configurações do aplicativo, como strings 
       DB_HOST=localhost
       DB_PORT=5432
 
-      ConnectionStrings__DefaultConnection="Host=${DB_HOST}$;Port=${DB_PORT};Database=${DB_NAME};Username=${DB_USERNAME};Password=${DB_PASSWORD}""
+      ConnectionStrings__DefaultConnection="Host=${DB_HOST}$;Port=${DB_PORT};Database=${DB_NAME};Username=${DB_USERNAME};Password=${DB_PASSWORD}"
       AzureServiceBus__ConnectionString=<AZURE_SERVICEBUS_CONNECTION_STRING>
       AzureServiceBus__QueueName=<AZURE_SERVICEBUS_QUEUE_NAME>
       ```
