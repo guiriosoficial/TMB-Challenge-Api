@@ -28,6 +28,7 @@ cd TMB-Challenge-Api
 /Controllers            -> Controladores que lidam com as requisições HTTP e definem as rotas da API.
 /Data                   -> Classes relacionadas ao acesso aos dados, como contextos de banco de dados para Entity Framework.
 /Enums                  -> Tipos enumerados que são usados em todo o aplicativo para representar valores constantes.
+/Migrations             -> Migraçoes para criar as tabelas no banco de dados.
 /Models                 -> Classes de modelo que representam a estrutura dos dados manipulados pelo aplicativo.
 /Properties             -> Arquivos de propriedades, como `launchSettings.json`, que configuram o ambiente de execução do projeto.
 /Repositorie            -> Interfaces e classes para o padrão de repositório, que abstrai a lógica de acesso a dados.
@@ -100,7 +101,7 @@ appsettings.json        -> Armazena configurações do aplicativo, como strings 
       ```bash
       dotnet ef database update
 
-      # Caso não exista nenhuma migração, utilize este comando antes:
+      # Caso altere algum model, crie uma nova migração:
       dotnet ef migrations add <MIGRATION_NAME>
       ```
    
@@ -166,5 +167,13 @@ docker compose up -d
       ```
 
 ## Abra o Projeto
-   - Por padrão, o projeto será executado na porta 5000
-   - http://localhost:5000
+- Por padrão, o projeto será executado na porta 5000
+- http://localhost:5000
+
+
+## TODO
+- Refinar validações do `OrderDto`
+- Separar Request Dto e Response Dto
+- Ajustar passagem de parametros entre `OrderController.UpdateOrder` e `OrderService.UpdateOrderAsync`
+- Remover duplicidade de `JsonSerializerConfig` no `Program.cs`
+- Alterar nome do `.csproj`

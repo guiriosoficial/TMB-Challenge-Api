@@ -6,12 +6,12 @@ using OrderApi.Services.Interfaces;
 
 namespace OrderApi.Services.Implementations
 {
-    public class WebSocketHandler : IWebSocketHandler
+    public class WebSocketService : IWebSocketService
     {
         private readonly ConcurrentDictionary<WebSocket, bool> _sockets = new ConcurrentDictionary<WebSocket, bool>();
         private readonly JsonSerializerOptions _jsonOptions;
 
-        public WebSocketHandler(JsonSerializerConfig jsonSerializerConfig)
+        public WebSocketService(JsonSerializerConfig jsonSerializerConfig)
         {
             _jsonOptions = jsonSerializerConfig.Options;
         }

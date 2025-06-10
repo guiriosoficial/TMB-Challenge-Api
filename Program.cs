@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
 using OrderApi.Data;
 using OrderApi.Repositories.Implementations;
@@ -22,7 +21,6 @@ builder.Configuration
     .AddEnvironmentVariables();
 
 builder.Services.Configure<AzureServiceBusOptions>(builder.Configuration.GetSection("AzureServiceBus"));
-builder.Services.AddTransient<OrderService>();
 
 builder.Services.AddCors(options =>
 {
@@ -38,7 +36,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddSingleton<JsonSerializerConfig>();
-builder.Services.AddSingleton<IWebSocketHandler, WebSocketHandler>();
+builder.Services.AddSingleton<IWebSocketService, WebSocketService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddHostedService<OrderWorker>();

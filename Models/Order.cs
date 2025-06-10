@@ -7,5 +7,6 @@ namespace OrderApi.Models
         public Guid Id { get; set; } = Guid.NewGuid();
         public OrderStatus Status { get; set; } = OrderStatus.Pendente;
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
+        public DateTime DataEfetivacao { get; set; }
     }
 }

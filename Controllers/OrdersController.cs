@@ -36,6 +36,10 @@ namespace OrderApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder(Order order)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             await _orderService.CreateOrderAsync(order);
             return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
         }
@@ -43,6 +47,11 @@ namespace OrderApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateOrder(Guid id, OrderDto orderDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var order = await _orderService.GetOrderByIdAsync(id);
             if (order == null)
             {
@@ -50,7 +59,6 @@ namespace OrderApi.Controllers
             }
 
             var updatedOrder = await _orderService.UpdateOrderAsync(order, orderDto);
-
             return Ok(updatedOrder);
         }
 

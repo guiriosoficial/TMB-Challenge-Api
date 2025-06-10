@@ -12,13 +12,13 @@ namespace OrderApi.Services.Implementations
     {
         private readonly AzureServiceBusOptions _serviceBusOptions;
         private readonly IOrderRepository _orderRepository;
-        private readonly IWebSocketHandler _webSocketHandler;
+        private readonly IWebSocketService _webSocketService;
 
-        public OrderService(IOrderRepository orderRepository, IOptions<AzureServiceBusOptions> serviceBusOptions, IWebSocketHandler webSocketHandler)
+        public OrderService(IOrderRepository orderRepository, IOptions<AzureServiceBusOptions> serviceBusOptions, IWebSocketService webSocketService)
         {
             _orderRepository = orderRepository;
             _serviceBusOptions = serviceBusOptions.Value;
-            _webSocketHandler = webSocketHandler;
+            _webSocketService = webSocketService;
 
         }
 
@@ -42,9 +42,10 @@ namespace OrderApi.Services.Implementations
             if (order != null)
             {
                 order.Status = status;
+                order.DataEfetivacao = new DateTime();
                 await _orderRepository.UpdateAsync(order);
 
-                await _webSocketHandler.SendMessageAsync(order);
+                await _webSocketService.SendMessageAsync(order);
             }
         }
 

@@ -7,11 +7,11 @@ namespace OrderApi.Controllers
   [Route("[controller]")]
   public class WebSocketController : ControllerBase
   {
-    private readonly IWebSocketHandler _webSocketHandler;
+    private readonly IWebSocketService _webSocketService;
 
-    public WebSocketController(IWebSocketHandler webSocketHandler)
+    public WebSocketController(IWebSocketService webSocketService)
     {
-      _webSocketHandler = webSocketHandler;
+      _webSocketService = webSocketService;
     }
 
     [HttpGet("/ws")]
@@ -20,7 +20,7 @@ namespace OrderApi.Controllers
       if (HttpContext.WebSockets.IsWebSocketRequest)
       {
         var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-        await _webSocketHandler.HandleWebSocketAsync(webSocket);
+        await _webSocketService.HandleWebSocketAsync(webSocket);
       }
       else
       {
