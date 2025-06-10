@@ -172,7 +172,6 @@ docker compose up -d
 
 
 ## TODO
-- Refinar validações do `OrderDto`
 - Separar Request Dto e Response Dto
 - Ajustar passagem de parametros entre `OrderController.UpdateOrder` e `OrderService.UpdateOrderAsync`
 - Remover duplicidade de `JsonSerializerConfig` no `Program.cs`
